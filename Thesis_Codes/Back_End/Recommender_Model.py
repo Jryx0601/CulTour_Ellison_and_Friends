@@ -39,3 +39,4 @@ class recommendation_model:
         sim_scores = sim_scores[:n_recommendation]
         item_indices = [i[0] for i in sim_scores]
         return self.places[item_indices]
+        
