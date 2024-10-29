@@ -55,8 +55,3 @@ Restaurant.fit(data_restaurant_selected['Name'],data_restaurant_selected['Cuisin
 target = 3
 sample = list(Restaurant.get_recommendation(target))
 print(sample)
-
-"""
-Duplicate in Restaurant:
-1.Grumpy Joe
-"""
