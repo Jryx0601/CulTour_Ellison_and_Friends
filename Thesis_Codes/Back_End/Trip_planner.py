@@ -39,7 +39,7 @@ class trip_planner_generator:
     
 
 #sample implementation
-# target = 'Nature'
-# Tourist = trip_planner_generator(target,data_Attraction_selected['Category'])
-# sample = Tourist.category_finder()
-# print(sample)
+target = 'Nature'
+Tourist = trip_planner_generator(target,data_Attraction_selected['Category'])
+sample = Tourist.category_finder()
+print(sample)
