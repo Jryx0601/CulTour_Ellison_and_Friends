@@ -28,8 +28,8 @@ class recommendation_model:
     def get_recommendation(self,place_index,n_recommendation = 5):
         target_category = self.categories[place_index]
         sim_scores = []
-        
-        # Only include items with matching categories
+        #places_index it should be the index of the places
+        #Only include items with matching categories
         #It doesnt include the target
         for idx, category in enumerate(self.categories):
             if category == target_category and idx != place_index:
@@ -39,4 +39,24 @@ class recommendation_model:
         sim_scores = sim_scores[:n_recommendation]
         item_indices = [i[0] for i in sim_scores]
         return self.places[item_indices]
-        
+    
+#-----------------------------------------------------------------------------------------------
+#Train the two model
+"""
+Notes in this code:
+index of the places when the user interact to the place it returns the index number of the place
+"""
+#Tourist Attraction
+Tourist = recommendation_model()
+Tourist.fit(data_Attraction_selected['Name'],data_Attraction_selected['Category'])
+#Restaurant Recommendation
+Restaurant = recommendation_model()
+Restaurant.fit(data_restaurant_selected['Name'],data_restaurant_selected['Cuisine Type'])
+target = 3
+sample = list(Restaurant.get_recommendation(target))
+print(sample)
+
+"""
+Duplicate in Restaurant:
+1.Grumpy Joe
+"""
