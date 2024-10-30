@@ -12,6 +12,7 @@ Alternative Version:
 
 
 import pandas as pd
+import random
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -28,6 +29,11 @@ class trip_planner_generator:
     def __init__(self,target,categories):
         self.target = target
         self.categories = categories 
+
+    def randomizer_places(self,array):
+        random.shuffle(array)
+        return array
+
     def category_finder(self,type,n_recommendation):
         places = []
         #idx is the index number of the categories in order to find the name
@@ -37,12 +43,19 @@ class trip_planner_generator:
             elif self.target == values and type == 'Restaurant':
                 places.append(data_restaurant_selected['Name'][idx])
 
+        #Needs to randomize
+        places = self.randomizer_places(places)
         return places[:n_recommendation]
     
 def trip_planner(tourist_Attaraction,Restaurant):
-    pattern = ['Attraction','Attraction','Restaurant','Attraction','Restaurant']
+    pattern = []
     place_generated = []
 
+    if len(tourist_Attaraction) == 3 and len(Restaurant) == 2:
+        pattern = ['Attraction','Attraction','Restaurant','Attraction','Restaurant']
+    elif len(tourist_Attaraction) < 3:
+        if len(tourist_Attaraction) == 2 and len(Restaurant) == 2:
+            pattern = ['Attraction','Restaurant','Attraction','Restaurant']
 
     Tourist_Attraction_Number = 0
     Restaurant_Number = 0
@@ -59,7 +72,7 @@ def trip_planner(tourist_Attaraction,Restaurant):
 
 #sample implementation
 #User input 
-target_tourist = 'Nature'
+target_tourist = 'Shopping'
 target_Restaurant = 'Filipino'
 
 #insert the data
@@ -73,8 +86,3 @@ Restaurant_Suggestion = Restaurant.category_finder('Restaurant',2)
 #Get the generated place
 final_generated = trip_planner(Tourist_Suggestion,Restaurant_Suggestion)
 print(final_generated)
-
-"""
-Needs for changes:
-Pattern when it is limited for data in dataset
-"""
