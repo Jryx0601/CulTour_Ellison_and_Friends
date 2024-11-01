@@ -5,6 +5,11 @@ st.set_page_config(
     page_title="Title ng page",
     page_icon='📃'
 )
+#TESTING
+testbut = st.button("GO TESTING")
+if testbut:
+    st.switch_page("pages/01_Log-in.py")
+
 st.sidebar.success("Select a page")
 
 st.title("Testing app")
