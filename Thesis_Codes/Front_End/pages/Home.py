@@ -7,16 +7,14 @@ from streamlit_folium import st_folium
 import folium
 from pathlib import Path
 import os
+import openpyxl
+from PIL import Image
+import io
 
 #pip install streamlit-option-menu
 from streamlit_option_menu import option_menu
 #st.title("ColTour")
-
-
-"""
-st.image(full directory from drive to the location)
-"""
-#Menu
+#----------------------------------------------------------------------------------------------------
 selected = option_menu(
     menu_title = None,
     options=["Map","Trip Planning","Account"],
@@ -49,10 +47,15 @@ if selected == "Map":
    st.divider()
 
    #Places
-   #hindi niya mahanap ung pic :(
+   """
+   Testing for gathering all the image once done in the UI testing
+   """
    script_location = Path(__file__).parent
-   image_path = script_location/'images'/'test1.jpg'
+   sample = 'test1'
+   image_path = script_location/'images'/f'{sample}.jpg'
    st.image(str(image_path))
+
+   
    #Dito pagkaclick ng image lalabas ito
    with st.popover("Image dito"):
         st.markdown("Pic ulet dito")
@@ -67,10 +70,10 @@ if selected == "Map":
         st.caption("Description ng place")
 
     
-
+#----------------------------------------------------------------------------------------------------
 if selected =="Trip Planning":
     st.write("bleh")
-
+#----------------------------------------------------------------------------------------------------
 if selected == "Account":
     piccol, deets = st.columns([2,3])
 
