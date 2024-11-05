@@ -98,7 +98,23 @@ if selected == "Map":
     st.divider()
 
     st.text('Restaurant')
-
+    col1,col2,col3,col4,col5 = st.columns(5)
+    with col1:
+        st.image(str(image_path), use_column_width=True)
+        with st.popover('Name_Place'):
+            st.text('Sample')
+    with col2:
+        with st.popover('Name_Place'):
+            st.text('Sample')
+    with col3:
+        with st.popover('Name_Place'):
+            st.text('Sample')
+    with col4:
+        with st.popover('Name_Place'):
+            st.text('Sample')
+    with col5:
+        with st.popover('Name_Place'):
+            st.text('Sample')
 
     
 #----------------------------------------------------------------------------------------------------
