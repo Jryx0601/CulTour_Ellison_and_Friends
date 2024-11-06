@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit_authenticator as stauth
 import yaml
 from yaml.loader import SafeLoader
-st.set_page_config(initial_sidebar_state="collapsed")
+st.set_page_config(initial_sidebar_state="collapsed",layout="wide")
 
 with open('credential/account.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
