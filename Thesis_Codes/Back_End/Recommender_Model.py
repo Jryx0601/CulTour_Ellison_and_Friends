@@ -53,16 +53,16 @@ Notes in this code:
 index of the places when the user interact to the place it returns the index number of the place
 """
 #Tourist Attraction
-# Tourist = recommendation_model()
-# Tourist.fit(data_Attraction_selected['Name'],data_Attraction_selected['Category'])
-# #Restaurant Recommendation
-# Restaurant = recommendation_model()
-# Restaurant.fit(data_restaurant_selected['Name'],data_restaurant_selected['Cuisine Type'])
+Tourist = recommendation_model()
+Tourist.fit(data_Attraction_selected['Name'],data_Attraction_selected['Category'])
+#Restaurant Recommendation
+Restaurant = recommendation_model()
+Restaurant.fit(data_restaurant_selected['Name'],data_restaurant_selected['Cuisine Type'])
 
 
-# target = 3
-# sample = list(Restaurant.get_recommendation(target))
-# print(sample)
+target = 3
+sample = list(Restaurant.get_recommendation(target))
+print(sample)
 
 """
 Notes in Applying Recommedation System:
