@@ -9,7 +9,7 @@ from pathlib import Path
 import os
 import sys
 import random
-from random import choices
+from random import choices, sample
 st.set_page_config(initial_sidebar_state="collapsed",layout="wide")
 #---------------------------------------------------------------
 #Accessing a file in back_End
@@ -61,93 +61,127 @@ selected = option_menu(
     orientation="horizontal",
 )
 if selected == "Map":
-    #Display of map
-   #Testing lang ito
-
-   #Interactive map
-   #https://discuss.streamlit.io/t/interactive-maps-using-geopandas-geodataframe-geodataframe/63706
-
-   #or
-   #Folium map
-   #pip install streamlit-folium
-   #https://github.com/randyzwitch/streamlit-folium
-    m = folium.Map(location = [14.3269, 120.9575], zoom_start = 50)
-    folium.Marker(
-        [14.3269, 120.9575],
-        popup = "DLSUD",
-        tooltip = "DLSUD"
-        ).add_to(m)
-   
-    # call to render Folium map in Streamlit
-    st_data = st_folium(m, width = 1735, height= 725)
-    st.divider()
-
-    #Filter 
-    options = st.multiselect(
-    "Filter",
-    ["Restaurant", "Tourist Attraction"])
-    st.divider()
-
-   #Images_Place
-    script_location = Path(__file__).parent
-    sample = 'test1'
-    image_path_tourist = script_location/'images'/f'{sample}.jpg'
-
-    #Places_Accessing and randomizing the places
-    places_Tourist = list(data_Attraction_selected['Name'])
-    places_Tourist_new = list(places_index_Home(places_Tourist,'Tourist').values())
-    #Columns of pop over
-    st.subheader('Tourist Attraction')
-    col1,col2,col3,col4,col5 = st.columns(5)
-    with col1:
-        pass
-    with col2:
-        pass
-    with col3:
-        pass
-    with col4:
-        pass
-    with col5:
-        pass
-
-
 #----------------------------------------------------------------------------------------------------
-    st.divider()
+# Data of the Tourist Attraction Access
+    script_location_Tourist = Path(__file__).parent
+    extensions = ['.jpg','.jfif','.png','.gif','.JPG','.jpeg']
 
+    if 'random_tourist_places' not in st.session_state:
+        st.session_state.random_tourist_places = list(sample(list(data_Attraction_selected['Name']),k=5))
+
+    places_Tourist = st.session_state.random_tourist_places
+    places_Tourist_new = list(places_index_Home(places_Tourist,'Tourist').values())
+    
+#----------------------------------------------------------------------------------------------------
+# Data of the Restaurant Access
     script_location_Restaurant = Path(__file__).parent
 
     if 'random_restaurant_places' not in st.session_state:
-        st.session_state.random_restaurant_places = list(choices(data_restaurant_selected['Name'],k=5))
-
+        st.session_state.random_restaurant_places = list(sample(list(data_restaurant_selected['Name']),k=5))
 
     places_Restaurant = st.session_state.random_restaurant_places
     places_Restaurant_new = list(places_index_Home(places_Restaurant,'Restaurant').values())
-    
+#----------------------------------------------------------------------------------------------------
+
+    m = folium.Map(location = [16.41639, 120.59306], zoom_start = 50)
+    st.divider()
+
+    #Filter 
+    options = st.selectbox(
+    "Filtered Map:",
+    ["Restaurant", "Tourist Attraction"])
+
+    if options == 'Tourist Attraction':
+        coordinates = []
+        for i in range(len(places_Tourist_new)):
+            folium.Marker(
+                [data_Attraction_selected['Latitude'][places_Tourist_new[i]],data_Attraction_selected['Longitude'][places_Tourist_new[i]]],
+                tooltip=data_Attraction_selected['Name'][places_Tourist_new[i]],
+                popup=data_Attraction_selected['Name'][places_Tourist_new[i]]
+            ).add_to(m)
+
+            coordinates.append([data_Attraction_selected['Latitude'][places_Tourist_new[i]],data_Attraction_selected['Longitude'][places_Tourist_new[i]]])
+
+        if coordinates:
+            m.fit_bounds(coordinates)
+
+        folium_static(m, width = 1735, height= 725)
+    elif options == 'Restaurant':
+        coordinates = []
+        for i in range(len(places_Tourist_new)):
+            folium.Marker(
+                [data_restaurant_selected['Latitude'][places_Restaurant_new[i]],data_restaurant_selected['Longitude'][places_Restaurant_new[i]]],
+                tooltip=data_restaurant_selected['Name'][places_Restaurant_new[i]],
+                popup=data_restaurant_selected['Name'][places_Restaurant_new[i]]
+            ).add_to(m)
+
+            coordinates.append([data_restaurant_selected['Latitude'][places_Restaurant_new[i]],data_restaurant_selected['Longitude'][places_Restaurant_new[i]]])
+
+        if coordinates:
+            m.fit_bounds(coordinates)
+        
+        folium_static(m, width = 1735, height= 725)
+    st.divider()
+
+#-------------------------------------------------------------------------------------------------------------------------------------
+    st.subheader('Tourist Attraction')
+    if 'Tourist_data' not in st.session_state:
+        st.session_state.Tourist_data = {}
+
+    if 'Tourist_recommendation' not in st.session_state:
+        st.session_state.Tourist_recommendation = None
+
+
+    col1,col2,col3,col4,col5 = st.columns(5)
+    cols = [col1,col2,col3,col4,col5]
+    for i in range(len(places_Tourist_new)):
+        with cols[i]:
+            image_path_tourist = script_location_Tourist/ 'Tourist_Attraction'
+            for ext in extensions:
+                tourist_image = image_path_tourist/f'{data_Attraction_selected['Name'][places_Tourist_new[i]]}{ext}'
+                if tourist_image.exists():
+                    image_path_tourist = tourist_image
+            st.image(str(image_path_tourist),use_column_width=True)
+            
+            if st.button(data_Attraction_selected['Name'][places_Tourist_new[i]], use_container_width=True):
+                st.session_state.Tourist_data['Name'] = data_Attraction_selected['Name'][places_Tourist_new[i]]
+                st.session_state.Tourist_data['Index'] = places_Tourist_new[i]
+                st.session_state.Tourist_data['Category'] = data_Attraction_selected['Category'][places_Tourist_new[i]]
+                st.session_state.Tourist_data['Longitude'] = data_Attraction_selected['Longitude'][places_Tourist_new[i]]
+                st.session_state.Tourist_data['Latitude'] = data_Attraction_selected['Latitude'][places_Tourist_new[i]]
+                st.session_state.Tourist_data['Description'] = data_Attraction_selected['Description'][places_Tourist_new[i]]
+
+                recommendation_tourist = list(Tourist.get_recommendation(places_Tourist_new[i]))
+                st.session_state.Tourist_recommendation = list(places_index_Home(recommendation_tourist,'Tourist').values())
+                st.switch_page('pages/tourist_page.py')
+
+#----------------------------------------------------------------------------------------------------
+    st.divider()
     if 'Restaurant_data' not in st.session_state:
         st.session_state.Restaurant_data = {} 
+
     st.subheader('Restaurant')
     
-    col1,col2,col3,col4,col5 = st.columns(5)
-    with col1:
-        image_path_tourist = script_location/'Restaurant'/f'{data_restaurant_selected['Name'][places_Restaurant_new[0]]}.jpg' or f'{data_restaurant_selected['Name'][places_Restaurant_new[0]]}.jfif' or f'{data_restaurant_selected['Name'][places_Restaurant_new[0]]}.png'
-        st.image(str(image_path_tourist),use_column_width=True)
-        if st.button(data_restaurant_selected['Name'][places_Restaurant_new[0]]):
-            st.session_state.Restaurant_data['Name'] = data_restaurant_selected['Name'][places_Restaurant_new[0]]
-            st.session_state.Restaurant_data['Index'] = places_Restaurant_new[0]
-            st.session_state.Restaurant_data['Cuisine Type'] = data_restaurant_selected['Cuisine Type'][places_Restaurant_new[0]]
-            st.session_state.Restaurant_data['Longitude'] = data_restaurant_selected['Longitude'][places_Restaurant_new[0]]
-            st.session_state.Restaurant_data['Latitude'] = data_restaurant_selected['Latitude'][places_Restaurant_new[0]]
-            st.switch_page('pages/place_page.py')
-    with col2:
-        pass
-    with col3:
-        pass
-    with col4:
-        pass
-    with col5:
-        pass
+    col1, col2, col3, col4, col5 = st.columns(5)
+    cols = [col1, col2, col3, col4, col5]
+ 
+    for i in range(len(places_Restaurant_new)):
+        with cols[i]:
+            
+            image_path_restaurant = script_location_Restaurant/'Restaurant'
+            for ext in extensions:
+                restuarant_image = image_path_restaurant/f'{data_restaurant_selected['Name'][places_Restaurant_new[i]]}{ext}'
+                if restuarant_image.exists():
+                    image_path_tourist = restuarant_image
+            st.image(str(image_path_tourist),use_column_width=True)
+            if st.button(data_restaurant_selected['Name'][places_Restaurant_new[i]], use_container_width=True):
+                st.session_state.Restaurant_data['Name'] = data_restaurant_selected['Name'][places_Restaurant_new[i]]
+                st.session_state.Restaurant_data['Index'] = places_Restaurant_new[i]
+                st.session_state.Restaurant_data['Cuisine Type'] = data_restaurant_selected['Cuisine Type'][places_Restaurant_new[i]]
+                st.session_state.Restaurant_data['Longitude'] = data_restaurant_selected['Longitude'][places_Restaurant_new[i]]
+                st.session_state.Restaurant_data['Latitude'] = data_restaurant_selected['Latitude'][places_Restaurant_new[i]]
+                st.switch_page('pages/place_page.py')
 
-    
 #----------------------------------------------------------------------------------------------------
 if selected =="Trip Planning":
     st.title("Category")
