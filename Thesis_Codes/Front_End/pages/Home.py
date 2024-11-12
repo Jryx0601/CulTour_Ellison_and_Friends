@@ -10,6 +10,7 @@ import os
 import sys
 import random
 from random import choices, sample
+import time
 st.set_page_config(initial_sidebar_state="collapsed",layout="wide")
 #---------------------------------------------------------------
 #Accessing a file in back_End
@@ -44,8 +45,21 @@ def places_index_Home(array,type_place):
                     else:
                         continue
             return place_dictionary
-    
-    
+#---------------------------------------------------------------
+
+def places_index_trip(trip_planner,format_final):
+
+    index_trip_planner = []
+    for i in range(len(trip_planner)):
+        if format_final[i] == 'Attraction':
+            for j in range(len(data_Attraction_selected['Name'])):
+                if trip_planner[i] == data_Attraction_selected['Name'][j]:
+                    index_trip_planner.append(j)
+        elif format_final[i] == 'Restaurant':
+            for k in range(len(data_restaurant_selected['Name'])):
+                if trip_planner[i] == data_restaurant_selected['Name'][k]:
+                    index_trip_planner.append(k)
+    return index_trip_planner
 
 #---------------------------------------------------------------
 #pip install streamlit-option-menu
@@ -119,7 +133,7 @@ if selected == "Map":
 
         if coordinates:
             m.fit_bounds(coordinates)
-        
+
         folium_static(m, width = 1735, height= 725)
     st.divider()
 
@@ -160,6 +174,9 @@ if selected == "Map":
     if 'Restaurant_data' not in st.session_state:
         st.session_state.Restaurant_data = {} 
 
+    if 'Restaurant_Recommendation' not in st.session_state:
+        st.session_state.Restaurant_Recommendation = None
+
     st.subheader('Restaurant')
     
     col1, col2, col3, col4, col5 = st.columns(5)
@@ -180,45 +197,117 @@ if selected == "Map":
                 st.session_state.Restaurant_data['Cuisine Type'] = data_restaurant_selected['Cuisine Type'][places_Restaurant_new[i]]
                 st.session_state.Restaurant_data['Longitude'] = data_restaurant_selected['Longitude'][places_Restaurant_new[i]]
                 st.session_state.Restaurant_data['Latitude'] = data_restaurant_selected['Latitude'][places_Restaurant_new[i]]
+                st.session_state.Restaurant_data['Description'] = data_restaurant_selected['Description'][places_Restaurant_new[i]]
+
+                recommended_restaurant = list(Restaurant.get_recommendation(places_Restaurant_new[i]))
+                st.session_state.Restaurant_Recommendation = list(places_index_Home(recommended_restaurant,'Restaurant').values()) 
                 st.switch_page('pages/place_page.py')
 
 #----------------------------------------------------------------------------------------------------
 if selected =="Trip Planning":
+    from Back_End.Trip_Planner import trip_planner_generator, trip_planner, data_Attraction_selected, data_restaurant_selected
     st.title("Category")
 
-    options = st.multiselect(
+    options_restaurant = st.selectbox(
     "Restaurant",
-    ["Restaurant", "Tourist Attraction"])
+    list(set(data_restaurant_selected['Cuisine Type'])),
+    index = None)
 
-    options1 = st.multiselect(
+    options_tourist = st.selectbox(
     "Tourist",
-    ["Restaurasnt", "Tourist Attracstion"])
+    list(set(data_Attraction_selected['Category'])),
+    index = None)
 
     generated = st.button("Click me")
 
     st.divider()
 
-    col1,col2,col3,col4,col5 = st.columns(5)
+    if generated and options_restaurant is not None and options_tourist is not None:
+        script_location = Path(__file__).parent
+        extensions = ['.jpg','.jfif','.png','.gif','.JPG','.jpeg']
 
-    with col1:
-        if generated:
-            st.write("generated here")
-    
-    with col2:
-        if generated:
-            st.write("generated here")
+        #Inserting the data
+        Tourist = trip_planner_generator(options_tourist,data_Attraction_selected['Category'])
+        Restaurant = trip_planner_generator(options_restaurant,data_restaurant_selected['Cuisine Type'])
 
-    with col3:
-        if generated:
-            st.write("generated here")
+        #Inser the number for pattern in trip planner this is default
+        Tourist_Suggestion = Tourist.category_finder('Tourist',3)
+        Restaurant_Suggestion = Restaurant.category_finder('Restaurant',2)
 
-    with col4:
-        if generated:
-            st.write("generated here")
+        #Get the generated place
+        final_generated = trip_planner(Tourist_Suggestion,Restaurant_Suggestion)
+        format_final = ['Attraction','Restaurant','Attraction','Restaurant']
 
-    with col5:
-        if generated:
-            st.write("generated here")
+        #the places are turned into index
+        index_final_generated = list(places_index_trip(final_generated,format_final))
+
+        #For loading
+        loading_bar = st.progress(0, text = 'Generating a trip planner....')
+
+        for percent_complete in range(100):
+            time.sleep(0.01)
+            loading_bar.progress(percent_complete + 1, text='Generating a trip planner....')
+        time.sleep(1)
+        loading_bar.empty()
+        
+
+        coordinates = []
+        for i in range(len(index_final_generated)):
+            if format_final[i] == 'Attraction':
+                coordinates.append([data_Attraction_selected['Latitude'][index_final_generated[i]],data_Attraction_selected['Longitude'][index_final_generated[i]]])
+            elif format_final[i] == 'Restaurant':
+                coordinates.append([data_restaurant_selected['Latitude'][index_final_generated[i]],data_restaurant_selected['Longitude'][index_final_generated[i]]])
+
+
+        map = folium.Map(location = [16.41639, 120.59306], zoom_start = 50)
+
+        for i in range(len(coordinates)):
+            folium.Marker(
+                coordinates[i],
+                popup=final_generated[i],
+            ).add_to(map)
+
+
+        folium.PolyLine(
+            locations = coordinates,
+            color = 'red',
+            weight = 5,
+            tooltip= 'Locations'
+        ).add_to(map)
+
+        if coordinates:
+            map.fit_bounds(coordinates)
+
+        folium_static(map, width = 1735, height= 725)
+        st.subheader('To ensure a respectful and enjoyable visit to Baguio, its important to be mindful of the environment, local customs, and public behavior. Preserve nature, respect indigenous communities, and be sensitive to religious practices. Maintain quiet and appropriate behavior in public spaces, and dress modestly. Additionally, practice politeness and patience, and support local businesses. By following these guidelines, you can contribute to a positive experience for both yourself and the local community')
+        for i in range(len(index_final_generated)):
+            if format_final[i] == 'Attraction':
+                image_path = script_location/'Tourist_Attraction'
+                for ext in extensions:
+                    image_path_tourist = image_path/f'{data_Attraction_selected['Name'][index_final_generated[i]]}{ext}'
+                    if image_path_tourist.exists():
+                        image_path = image_path_tourist
+                st.header(f'{i + 1} Tourist Spot ({data_Attraction_selected['Name'][index_final_generated[i]]}): ')
+                st.image(str(image_path),width=700)
+                st.subheader('Description: ')
+                st.subheader(data_Attraction_selected['Description'][index_final_generated[i]])
+            elif format_final[i] == 'Restaurant':
+                image_path = script_location/'Restaurant'
+                for ext in extensions:
+                    image_path_restaurant = image_path/f'{data_restaurant_selected['Name'][index_final_generated[i]]}{ext}'
+                    if image_path_restaurant.exists():
+                        image_path = image_path_restaurant
+                st.header(f'{i + 1} Restaurant ({data_restaurant_selected['Name'][index_final_generated[i]]}):')
+                st.image(str(image_path), width=700)
+                st.subheader(f'Description:')
+                st.subheader(data_restaurant_selected['Description'][index_final_generated[i]])
+
+
+
+    else:
+        st.warning('Please make sure to fill all the options for trip planner')
+
+
     
 
 #----------------------------------------------------------------------------------------------------

@@ -9,9 +9,7 @@ if 'Tourist_data' in st.session_state:
     if st.button('Back'):
         st.switch_page('pages/Home.py')
 
-    script_recommendation = Path(__file__).parent.parent.parent
-    sys.path.append(str(script_recommendation))
-    from Back_End.Recommender_Model import data_Attraction_selected
+    
 
     st.header(st.session_state.Tourist_data['Name'])
     st.divider()
@@ -25,10 +23,15 @@ if 'Tourist_data' in st.session_state:
 
     folium_static(place, width = 1735, height= 725)
     st.divider()
-    st.subheader(f'Description: {st.session_state.Tourist_data['Description']}')
+    st.subheader(f'Description:')
+    st.subheader(f'{st.session_state.Tourist_data['Description']}')
     st.divider()
 
 if 'Tourist_recommendation' in st.session_state:
+    script_recommendation = Path(__file__).parent.parent.parent
+    sys.path.append(str(script_recommendation))
+    from Back_End.Recommender_Model import data_Attraction_selected
+
     script_location = Path(__file__).parent
     extensions = ['.jpg','.jfif','.png','.gif','.JPG','.jpeg']
 
@@ -57,7 +60,8 @@ if 'Tourist_recommendation' in st.session_state:
                 folium_static(place_recommended,width=650,height=500)
 
                 st.divider()
-                st.subheader(f'Description: {data_Attraction_selected['Description'][st.session_state.Tourist_recommendation[i]]}')
+                st.subheader(f'Description:')
+                st.subheader(f'{data_Attraction_selected['Description'][st.session_state.Tourist_recommendation[i]]}')
 
     
     

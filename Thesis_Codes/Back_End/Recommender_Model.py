@@ -8,14 +8,14 @@ from sklearn.metrics.pairwise import cosine_similarity
 import random
 from pathlib import Path
 script_location_dataset = Path(__file__).parent
-dataset_path = script_location_dataset/ 'Baguio_Dataset_Version2.xlsx'
+dataset_path = script_location_dataset/ 'Baguio_Dataset.xlsx'
 #Tourist Attraction Dataset
 data_Attraction = pd.read_excel(dataset_path, sheet_name='Tourist Attraction')
-data_Attraction_selected = data_Attraction[['Place_ID','Name','Category','Description','Latitude','Longitude']]
+data_Attraction_selected = data_Attraction[['Name','Category','Description','Latitude','Longitude']]
 
 #Restaurant
 data_restaurant = pd.read_excel(dataset_path, sheet_name='Restaurant')
-data_restaurant_selected = data_restaurant[['Restaurant_ID','Name','Cuisine Type','Latitude','Longitude']]
+data_restaurant_selected = data_restaurant[['Name','Cuisine Type','Latitude','Longitude','Description']]
 
 #For Training a model and getting recommendation system
 class recommendation_model:
