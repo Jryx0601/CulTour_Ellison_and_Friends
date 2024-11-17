@@ -231,7 +231,7 @@ if selected =="Trip Planning":
         Restaurant = trip_planner_generator(options_restaurant,data_restaurant_selected['Cuisine Type'])
 
         #Inser the number for pattern in trip planner this is default
-        Tourist_Suggestion = Tourist.category_finder('Tourist',3)
+        Tourist_Suggestion = Tourist.category_finder('Tourist',2)
         Restaurant_Suggestion = Restaurant.category_finder('Restaurant',2)
 
         #Get the generated place
@@ -278,7 +278,7 @@ if selected =="Trip Planning":
         if coordinates:
             map.fit_bounds(coordinates)
 
-        folium_static(map, width = 1735, height= 725)
+        folium_static(map, width = 1400, height= 725)
         st.subheader('To ensure a respectful and enjoyable visit to Baguio, its important to be mindful of the environment, local customs, and public behavior. Preserve nature, respect indigenous communities, and be sensitive to religious practices. Maintain quiet and appropriate behavior in public spaces, and dress modestly. Additionally, practice politeness and patience, and support local businesses. By following these guidelines, you can contribute to a positive experience for both yourself and the local community')
         for i in range(len(index_final_generated)):
             if format_final[i] == 'Attraction':
