@@ -3,7 +3,7 @@ import folium
 from streamlit_folium import folium_static
 from pathlib import Path
 import sys
-
+from PIL import Image
 if 'Restaurant_data' in st.session_state:
     if st.button('Back'):
         st.switch_page('pages/Home.py')
@@ -42,8 +42,10 @@ if 'Restaurant_Recommendation' in st.session_state:
                 image_path_restaurant = image_path/f'{data_restaurant_selected['Name'][st.session_state.Restaurant_Recommendation[i]]}{ext}'
                 if image_path_restaurant.exists():
                     image_path = image_path_restaurant
-            st.image(str(image_path),use_column_width=True)
-            with st.popover(data_restaurant_selected['Name'][st.session_state.Restaurant_Recommendation[i]]):
+            image = Image.open(str(image_path))
+            new_image = image.resize((450,400))
+            st.image(new_image)
+            with st.popover(data_restaurant_selected['Name'][st.session_state.Restaurant_Recommendation[i]],use_container_width=True):
                 place_recommended = folium.Map(location=[data_restaurant_selected['Latitude'][st.session_state.Restaurant_Recommendation[i]],data_restaurant_selected['Longitude'][st.session_state.Restaurant_Recommendation[i]]], zoom_start=50)
                 folium.Marker(
                     [data_restaurant_selected['Latitude'][st.session_state.Restaurant_Recommendation[i]],data_restaurant_selected['Longitude'][st.session_state.Restaurant_Recommendation[i]]],

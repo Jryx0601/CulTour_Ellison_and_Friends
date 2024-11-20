@@ -6,6 +6,7 @@ import datetime
 from streamlit_folium import st_folium, folium_static
 import folium
 from pathlib import Path
+from PIL import Image
 import os
 import sys
 import random
@@ -155,7 +156,10 @@ if selected == "Map":
                 tourist_image = image_path_tourist/f'{data_Attraction_selected['Name'][places_Tourist_new[i]]}{ext}'
                 if tourist_image.exists():
                     image_path_tourist = tourist_image
-            st.image(str(image_path_tourist),use_column_width=True)
+
+            image = Image.open(str(image_path_tourist))
+            new_image = image.resize((450,400))
+            st.image(new_image)
             
             if st.button(data_Attraction_selected['Name'][places_Tourist_new[i]], use_container_width=True):
                 st.session_state.Tourist_data['Name'] = data_Attraction_selected['Name'][places_Tourist_new[i]]
@@ -189,8 +193,10 @@ if selected == "Map":
             for ext in extensions:
                 restuarant_image = image_path_restaurant/f'{data_restaurant_selected['Name'][places_Restaurant_new[i]]}{ext}'
                 if restuarant_image.exists():
-                    image_path_tourist = restuarant_image
-            st.image(str(image_path_tourist),use_column_width=True)
+                    image_path_restaurant = restuarant_image
+            image = Image.open(str(image_path_restaurant))
+            new_image = image.resize((450,400))
+            st.image(new_image)
             if st.button(data_restaurant_selected['Name'][places_Restaurant_new[i]], use_container_width=True):
                 st.session_state.Restaurant_data['Name'] = data_restaurant_selected['Name'][places_Restaurant_new[i]]
                 st.session_state.Restaurant_data['Index'] = places_Restaurant_new[i]

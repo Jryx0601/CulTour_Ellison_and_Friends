@@ -47,8 +47,10 @@ if 'Tourist_recommendation' in st.session_state:
                 image_path_tourist = image_path/f'{data_Attraction_selected['Name'][st.session_state.Tourist_recommendation[i]]}{ext}'
                 if image_path_tourist.exists():
                     image_path = image_path_tourist
-            st.image(str(image_path), use_column_width=True)
-            with st.popover(data_Attraction_selected['Name'][st.session_state.Tourist_recommendation[i]]):
+            image = Image.open(str(image_path))
+            new_image = image.resize((450,400))
+            st.image(new_image)
+            with st.popover(data_Attraction_selected['Name'][st.session_state.Tourist_recommendation[i]],use_container_width=True):
                 st.title(data_Attraction_selected['Name'][st.session_state.Tourist_recommendation[i]])
                 place_recommended = folium.Map(location= [data_Attraction_selected['Latitude'][st.session_state.Tourist_recommendation[i]],data_Attraction_selected['Longitude'][st.session_state.Tourist_recommendation[i]]], zoom_start=50)
                 folium.Marker(
