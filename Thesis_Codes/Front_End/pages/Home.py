@@ -120,7 +120,7 @@ if selected == "Map":
         if coordinates:
             m.fit_bounds(coordinates)
 
-        folium_static(m, width = 1735, height= 725)
+        folium_static(m, width = 1700, height= 725)
     elif options == 'Restaurant':
         coordinates = []
         for i in range(len(places_Tourist_new)):
@@ -135,7 +135,7 @@ if selected == "Map":
         if coordinates:
             m.fit_bounds(coordinates)
 
-        folium_static(m, width = 1735, height= 725)
+        folium_static(m, width = 1700, height= 725)
     st.divider()
 
 #-------------------------------------------------------------------------------------------------------------------------------------
@@ -168,6 +168,7 @@ if selected == "Map":
                 st.session_state.Tourist_data['Longitude'] = data_Attraction_selected['Longitude'][places_Tourist_new[i]]
                 st.session_state.Tourist_data['Latitude'] = data_Attraction_selected['Latitude'][places_Tourist_new[i]]
                 st.session_state.Tourist_data['Description'] = data_Attraction_selected['Description'][places_Tourist_new[i]]
+                st.session_state.Tourist_data['History'] = data_Attraction_selected['History'][places_Tourist_new[i]]
 
                 recommendation_tourist = list(Tourist.get_recommendation(places_Tourist_new[i]))
                 st.session_state.Tourist_recommendation = list(places_index_Home(recommendation_tourist,'Tourist').values())

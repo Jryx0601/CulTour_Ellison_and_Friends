@@ -8,7 +8,7 @@ script_location_dataset = Path(__file__).parent
 dataset_path = script_location_dataset/ 'Baguio_Dataset.xlsx'
 #Tourist Attraction Dataset
 data_Attraction = pd.read_excel(dataset_path, sheet_name='Tourist Attraction')
-data_Attraction_selected = data_Attraction[['Name','Category','Description','Latitude','Longitude']]
+data_Attraction_selected = data_Attraction[['Name','Category','Description','Latitude','Longitude','History']]
 
 #Restaurant
 data_restaurant = pd.read_excel(dataset_path, sheet_name='Restaurant')
@@ -41,7 +41,6 @@ class trip_planner_generator:
     
 def trip_planner(tourist_Attaraction,Restaurant):
     pattern = ['Attraction','Restaurant','Attraction','Restaurant']
-    print(tourist_Attaraction,Restaurant)
     #To get unique value to the list so it doesn't repeat
     tourist_Attaraction = list(set(tourist_Attaraction))
     Restaurant = list(set(Restaurant))
@@ -74,8 +73,7 @@ def trip_planner(tourist_Attaraction,Restaurant):
 
 # #Insert the number for pattern in trip planner
 # Tourist_Suggestion = Tourist.category_finder('Tourist',2)
-# Restaurant_Suggestion = Restaurant.category_finder(s'Restaurant',2)
+# Restaurant_Suggestion = Restaurant.category_finder('Restaurant',2)
 # #Get the generated place
 # final_generated = trip_planner(Tourist_Suggestion,Restaurant_Suggestion)
 # print(final_generated)
-# print(data_Attraction_selected['Description'])

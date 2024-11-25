@@ -17,10 +17,10 @@ if 'Restaurant_data' in st.session_state:
     ).add_to(place)
 
     folium_static(place, width = 1735, height= 725)
-
-    st.subheader('Description: ')
-    st.subheader(st.session_state.Restaurant_data['Description'])
     st.header(f'Cuisine Type: {st.session_state.Restaurant_data['Cuisine Type']}')
+    st.subheader('Description: ')
+    st.caption(st.session_state.Restaurant_data['Description'])
+    
     st.divider()
 
 if 'Restaurant_Recommendation' in st.session_state:
@@ -56,7 +56,7 @@ if 'Restaurant_Recommendation' in st.session_state:
                 folium_static(place_recommended,width=650,height=500)
 
                 st.subheader('Description: ')
-                st.subheader(f'{data_restaurant_selected['Description'][st.session_state.Restaurant_Recommendation[i]]}')
+                st.caption(f'{data_restaurant_selected['Description'][st.session_state.Restaurant_Recommendation[i]]}')
 
     
     

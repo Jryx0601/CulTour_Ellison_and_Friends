@@ -11,7 +11,7 @@ script_location_dataset = Path(__file__).parent
 dataset_path = script_location_dataset/ 'Baguio_Dataset.xlsx'
 #Tourist Attraction Dataset
 data_Attraction = pd.read_excel(dataset_path, sheet_name='Tourist Attraction')
-data_Attraction_selected = data_Attraction[['Name','Category','Description','Latitude','Longitude']]
+data_Attraction_selected = data_Attraction[['Name','Category','Description','Latitude','Longitude','History']]
 
 #Restaurant
 data_restaurant = pd.read_excel(dataset_path, sheet_name='Restaurant')
@@ -52,17 +52,17 @@ class recommendation_model:
 Notes in this code:
 index of the places when the user interact to the place it returns the index number of the place
 """
-#Tourist Attraction
-Tourist = recommendation_model()
-Tourist.fit(data_Attraction_selected['Name'],data_Attraction_selected['Category'])
-#Restaurant Recommendation
-Restaurant = recommendation_model()
-Restaurant.fit(data_restaurant_selected['Name'],data_restaurant_selected['Cuisine Type'])
+# #Tourist Attraction
+# Tourist = recommendation_model()
+# Tourist.fit(data_Attraction_selected['Name'],data_Attraction_selected['Category'])
+# #Restaurant Recommendation
+# Restaurant = recommendation_model()
+# Restaurant.fit(data_restaurant_selected['Name'],data_restaurant_selected['Cuisine Type'])
 
 
-target = 3
-sample = list(Restaurant.get_recommendation(target))
-print(sample)
+# target = 3
+# sample = list(Restaurant.get_recommendation(target))
+# print(sample)
 
 """
 Notes in Applying Recommedation System:

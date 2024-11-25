@@ -9,8 +9,6 @@ if 'Tourist_data' in st.session_state:
     if st.button('Back'):
         st.switch_page('pages/Home.py')
 
-    
-
     st.header(st.session_state.Tourist_data['Name'])
     st.divider()
 
@@ -21,10 +19,12 @@ if 'Tourist_data' in st.session_state:
         tooltip=st.session_state.Tourist_data['Name']
     ).add_to(place)
 
-    folium_static(place, width = 1735, height= 725)
+    folium_static(place, width = 1350, height= 725)
     st.divider()
     st.subheader(f'Description:')
-    st.subheader(f'{st.session_state.Tourist_data['Description']}')
+    st.caption(f'{st.session_state.Tourist_data['Description']}')
+    st.subheader('History:')
+    st.caption(f'{st.session_state.Tourist_data['History']}')
     st.divider()
 
 if 'Tourist_recommendation' in st.session_state:
@@ -63,7 +63,9 @@ if 'Tourist_recommendation' in st.session_state:
 
                 st.divider()
                 st.subheader(f'Description:')
-                st.subheader(f'{data_Attraction_selected['Description'][st.session_state.Tourist_recommendation[i]]}')
+                st.caption(f'{data_Attraction_selected['Description'][st.session_state.Tourist_recommendation[i]]}')
+                st.subheader(f'History:')
+                st.caption(f'{data_Attraction_selected['History'][st.session_state.Tourist_recommendation[i]]}')
 
     
     
