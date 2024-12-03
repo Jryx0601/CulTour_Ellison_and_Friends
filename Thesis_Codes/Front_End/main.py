@@ -22,7 +22,7 @@ except Exception as e:
     st.error(e)
 
 if st.session_state['authentication_status']:
-    authenticator.logout()
+    st.session_state['authentication_status'] = True
     st.switch_page('pages/Home.py')
 elif st.session_state['authentication_status'] is False:
     st.error('Username/Password is incorrect')

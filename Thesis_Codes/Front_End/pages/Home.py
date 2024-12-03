@@ -12,7 +12,24 @@ import sys
 import random
 from random import choices, sample
 import time
+import streamlit_authenticator as stauth
+import yaml
+from yaml.loader import SafeLoader
+
+
 st.set_page_config(initial_sidebar_state="collapsed",layout="wide")
+
+
+with open('credential/account.yaml') as file:
+    config = yaml.load(file, Loader=SafeLoader)
+
+authenticator = stauth.Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days'],
+)
+st.session_state['authentication_status'] = True
 #---------------------------------------------------------------
 #Accessing a file in back_End
 script_recommendation = Path(__file__).parent.parent.parent
@@ -286,7 +303,8 @@ if selected =="Trip Planning":
             map.fit_bounds(coordinates)
 
         folium_static(map, width = 1400, height= 725)
-        st.subheader('To ensure a respectful and enjoyable visit to Baguio, its important to be mindful of the environment, local customs, and public behavior. Preserve nature, respect indigenous communities, and be sensitive to religious practices. Maintain quiet and appropriate behavior in public spaces, and dress modestly. Additionally, practice politeness and patience, and support local businesses. By following these guidelines, you can contribute to a positive experience for both yourself and the local community')
+        st.subheader("About Baguio Culture: ")
+        st.caption('To ensure a respectful and enjoyable visit to Baguio, its important to be mindful of the environment, local customs, and public behavior. Preserve nature, respect indigenous communities, and be sensitive to religious practices. Maintain quiet and appropriate behavior in public spaces, and dress modestly. Additionally, practice politeness and patience, and support local businesses. By following these guidelines, you can contribute to a positive experience for both yourself and the local community')
         for i in range(len(index_final_generated)):
             if format_final[i] == 'Attraction':
                 image_path = script_location/'Tourist_Attraction'
@@ -295,9 +313,11 @@ if selected =="Trip Planning":
                     if image_path_tourist.exists():
                         image_path = image_path_tourist
                 st.header(f'{i + 1} Tourist Spot ({data_Attraction_selected['Name'][index_final_generated[i]]}): ')
-                st.image(str(image_path),width=700)
+                image = Image.open(str(image_path))
+                new_image = image.resize((450,400))
+                st.image(new_image)
                 st.subheader('Description: ')
-                st.subheader(data_Attraction_selected['Description'][index_final_generated[i]])
+                st.caption(data_Attraction_selected['Description'][index_final_generated[i]])
             elif format_final[i] == 'Restaurant':
                 image_path = script_location/'Restaurant'
                 for ext in extensions:
@@ -305,9 +325,11 @@ if selected =="Trip Planning":
                     if image_path_restaurant.exists():
                         image_path = image_path_restaurant
                 st.header(f'{i + 1} Restaurant ({data_restaurant_selected['Name'][index_final_generated[i]]}):')
-                st.image(str(image_path), width=700)
+                image = Image.open(str(image_path))
+                new_image = image.resize((450,400))
+                st.image(new_image)
                 st.subheader(f'Description:')
-                st.subheader(data_restaurant_selected['Description'][index_final_generated[i]])
+                st.caption(data_restaurant_selected['Description'][index_final_generated[i]])
 
 
 
@@ -319,21 +341,50 @@ if selected =="Trip Planning":
 
 #----------------------------------------------------------------------------------------------------
 if selected == "Account":
+
     piccol, deets = st.columns([2,3])
 
     with piccol:
         st.title("Account Profile")
 
+        #Picture here
+        st.write("pic here")
+        with st.popover("Edit your profile"):
+            #Edit Name
+            name = st.text_input("Input your name", "Admin")
+            st.divider()
+            #Edit Gender
+            gender = st.selectbox("Gender",["Male","Female","Other"])
+            st.divider()
+            #Edit Birhday
+            bday = st.date_input("Birthday",datetime.date(2002, 6, 6))
+            #Edit Cp Number
+            cpno = st.text_input("Input your cellphone number", "00000000000")
+            #Edit Address
+            address = st.text_input("Input your address", "#312, St.Thony, Addass 3B, Molino X, Bacoor, Cavite")
+
     with deets:
-        st.write(" ")
-        st.subheader("Name")
-        st.write("Admin")
         
-        st.subheader("Gender")
-        gender = st.selectbox("",["Male","Female","Helicopter"])
+        st.write(" ")
+        st.subheader(f"Name: {name}")
+        
+        st.subheader(f"Gender: {gender}")
         st.write("")
 
-        st.subheader("Birthday")
-        d = st.date_input("", datetime.date(2002, 2, 6))
-        st.write(d)
+        st.subheader(f"Birthday: {bday}")
+        st.write("")
+
+        st.subheader(f"Contact: {cpno}")
+        st.write("")
+
+        st.subheader(f"Address: {address}")
+        st.write("")
+
+        #Log Out Button
+        if st.session_state['authentication_status']:
+            if st.button("Log Out",type='primary'):
+                st.session_state['authentication_status'] = False
+                st.switch_page('main.py')
+
+        
 

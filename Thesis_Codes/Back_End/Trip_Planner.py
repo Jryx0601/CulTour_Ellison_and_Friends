@@ -39,6 +39,7 @@ class trip_planner_generator:
         places = self.randomizer_places(places,n_recommendation)
         return places
     
+
 def trip_planner(tourist_Attaraction,Restaurant):
     pattern = ['Attraction','Restaurant','Attraction','Restaurant']
     #To get unique value to the list so it doesn't repeat
