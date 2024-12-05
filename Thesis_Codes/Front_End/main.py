@@ -15,7 +15,7 @@ authenticator = stauth.Authenticate(
 )
 
 
-
+st.title("Log in to CulTour: ")
 try:
     authenticator.login()
 except Exception as e:

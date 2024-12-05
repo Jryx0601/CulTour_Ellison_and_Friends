@@ -19,7 +19,7 @@ from yaml.loader import SafeLoader
 
 st.set_page_config(initial_sidebar_state="collapsed",layout="wide")
 
-
+st.title("Welcome to CulTour")
 with open('credential/account.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
@@ -318,6 +318,8 @@ if selected =="Trip Planning":
                 st.image(new_image)
                 st.subheader('Description: ')
                 st.caption(data_Attraction_selected['Description'][index_final_generated[i]])
+                st.subheader('History: ')
+                st.caption(data_Attraction_selected['History'][index_final_generated[i]])
             elif format_final[i] == 'Restaurant':
                 image_path = script_location/'Restaurant'
                 for ext in extensions:
