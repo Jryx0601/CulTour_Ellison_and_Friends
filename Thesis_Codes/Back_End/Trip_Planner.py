@@ -65,16 +65,16 @@ def trip_planner(tourist_Attaraction,Restaurant):
 
 # #sample implementation
 # #User input 
-# target_tourist = 'Art'
-# target_Restaurant = 'Filipino'
+target_tourist = 'Art'
+target_Restaurant = 'Filipino'
 
-# #insert the data
-# Tourist = trip_planner_generator(target_tourist,data_Attraction_selected['Category'])
-# Restaurant = trip_planner_generator(target_Restaurant, data_restaurant_selected['Cuisine Type'])
+#insert the data
+Tourist = trip_planner_generator(target_tourist,data_Attraction_selected['Category'])
+Restaurant = trip_planner_generator(target_Restaurant, data_restaurant_selected['Cuisine Type'])
 
-# #Insert the number for pattern in trip planner
-# Tourist_Suggestion = Tourist.category_finder('Tourist',2)
-# Restaurant_Suggestion = Restaurant.category_finder('Restaurant',2)
-# #Get the generated place
-# final_generated = trip_planner(Tourist_Suggestion,Restaurant_Suggestion)
-# print(final_generated)
+#Insert the number for pattern in trip planner
+Tourist_Suggestion = Tourist.category_finder('Tourist',2)
+Restaurant_Suggestion = Restaurant.category_finder('Restaurant',2)
+#Get the generated place
+final_generated = trip_planner(Tourist_Suggestion,Restaurant_Suggestion)
+print(final_generated)
